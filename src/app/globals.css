@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --background: #efeae2; /* светлый беж / серо-беж */
+  --foreground: #111111; /* почти чёрный текст */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0b0b0b;
+    --foreground: #f2f2f2;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter);
+}
+
+/* Заголовки в "старославянском" декоративном стиле */
+.font-old {
+  font-family: var(--font-old-standard);
+}
