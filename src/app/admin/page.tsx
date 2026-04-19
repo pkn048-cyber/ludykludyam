@@ -1,22 +1,11 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import AdminDashboard from "@/components/admin/admin-dashboard";
 
-export default function AdminModerationPage() {
-  const router = useRouter();
-  const [authed, setAuthed] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem("admin_auth") === "1") {
-      setAuthed(true);
-    } else {
-      router.replace("/admin/login");
-    }
-  }, [router]);
-
-  if (!authed) return null;
+export default async function AdminModerationPage() {
+  const cookieStore = await cookies();
+  const authed = cookieStore.get("admin_auth")?.value === "1";
+  if (!authed) redirect("/admin/login");
 
   return (
     <div className="min-h-screen bg-[#efeae2] text-[#111111]">

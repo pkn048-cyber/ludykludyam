@@ -1,41 +1,38 @@
-"use client";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+async function loginAction(formData: FormData) {
+  "use server";
 
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? "12345";
+  const password = String(formData.get("password") ?? "");
+  const expected = process.env.ADMIN_PASSWORD ?? "12345";
 
-export default function AdminLoginPage() {
-  const router = useRouter();
-  const [error, setError] = useState(false);
-
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const password = String(formData.get("password") ?? "");
-
-    if (!password || password !== ADMIN_PASSWORD) {
-      setError(true);
-      return;
-    }
-
-    localStorage.setItem("admin_auth", "1");
-    router.push("/admin");
+  if (!password || password !== expected) {
+    redirect("/admin/login?error=1");
   }
 
+  const cookieStore = await cookies();
+  cookieStore.set("admin_auth", "1", {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+  });
+
+  redirect("/admin");
+}
+
+export default function AdminLoginPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ error?: string }>;
+}) {
   return (
     <div className="min-h-screen bg-[#efeae2] text-[#111111]">
       <div className="mx-auto flex min-h-screen max-w-3xl items-center px-6 py-10">
         <div className="w-full rounded-3xl border-2 border-black bg-white/50 p-6">
           <div className="font-old text-3xl font-bold">Вход админа</div>
 
-          {error && (
-            <div className="mt-4 rounded-2xl border-2 border-[#d63b2e] bg-[#d63b2e]/10 p-3 text-sm font-medium text-[#111111]">
-              Неверный пароль.
-            </div>
-          )}
-
-          <form onSubmit={onSubmit} className="mt-6 space-y-4">
+          <form action={loginAction} className="mt-6 space-y-4">
             <label className="space-y-2">
               <div className="text-xs font-medium text-black/70">Пароль</div>
               <input
