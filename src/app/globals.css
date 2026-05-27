@@ -30,3 +30,19 @@ body {
 .font-old {
   font-family: var(--font-old-standard);
 }
+
+/* Бесконечный тикер проектов */
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-scroll 55s linear infinite;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
